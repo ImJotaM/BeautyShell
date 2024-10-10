@@ -1,37 +1,5 @@
 #pragma once
-#include <raylib.h>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <chrono>
-
-const std::string FONTS_PATH = "assets/fonts/";
-
-auto StartBackspacePress = std::chrono::steady_clock::now();
-int EreaseStartDelay = 500;
-auto StartRepeatRate = std::chrono::steady_clock::now();
-int EreaseRepeatRate = 25;
-
-struct FontData {
-	Font font = {};
-	std::string font_path = {};
-};
-
-struct ConsoleText {
-	std::string Text = "";
-	Vector2 Position = { 0, 0 };
-	Color color = WHITE;
-};
-
-struct ConsoleData {
-
-	int Width = 500;
-	int Height = 600;
-	std::string Title = "Beauty Shell";
-	int FPS = 60;
-	Color Background = WHITE;
-
-};
+#include "KeyHandler.h"
 
 void ConsoleLoadFont(FontData& font) {
 	font.font = LoadFontEx(font.font_path.c_str(), 32, nullptr, 250);
@@ -41,38 +9,33 @@ void ConsoleUnloadFont(FontData& font) {
 	UnloadFont(font.font);
 }
 
-int ConvertTimeDifToMs(std::chrono::steady_clock::duration duration) {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+void ConsoleDrawText(ConsoleText& text) {
+
+	Vector2 NormalizedPosition = { text.Position.x * ScreenGridOffset.x, text.Position.y * ScreenGridOffset.y };
+
+	DrawTextEx(CnslFont::CurrentFont.font, text.Text.c_str(), NormalizedPosition, CnslFont::FontSize, CnslFont::Spacing, text.color);
 }
 
-FontData Arial = { {}, FONTS_PATH + "arial.ttf" };
-FontData CascadiaCode = { {}, FONTS_PATH + "CascadiaCode.ttf" };
+void ConsoleDrawCursor(Vector2 Position) {
+	Vector2 NormalizedPosition = { Position.x * ScreenGridOffset.x , Position.y + ScreenGridOffset.y };
+	DrawRectangle(NormalizedPosition.x, NormalizedPosition.y, CnslCursor::ConsoleCursorSize.x, CnslCursor::ConsoleCursorSize.y, CnslCursor::color);
+}
 
 void StartBeautyShell() {
-
-	ConsoleData MainConsole = {
-		500, 600, "BeautyShell", 60, BLACK
-	};
 
 	InitWindow(MainConsole.Width, MainConsole.Height, MainConsole.Title.c_str());
 	SetTargetFPS(MainConsole.FPS);
 
-	ConsoleLoadFont(CascadiaCode);
+	ConsoleLoadFont(CnslFont::CurrentFont);
 
-	FontData CurrentFont = CascadiaCode;
+	OutputText.push_back({ "Bem-vindo ao BeautyShell!", {1, 1}, GREEN });
+	OutputText.push_back({ "Linha de comando: ", {1, 2}, WHITE });
 
-	std::vector<ConsoleText> OutputText;
-
-	OutputText.push_back({ "Bem-vindo ao BeautyShell!", {10, 10}, GREEN });
-	OutputText.push_back({ "Linha de comando: ", {10, 28}, WHITE });
-
-	ConsoleText InputText;
-	InputText.Position = { (float)(OutputText.back().Text.size() * 8 + 8), 28 };
-
-	bool BackspaceActive = false;
-	bool RepeatActive = false;
+	InputText.Position = { (float)(OutputText.back().Text.size() + 1), 2 };
 
 	while (!WindowShouldClose()) {
+
+		currentTime = CnslTime::GetCurrentTime();
 
 		int key = GetCharPressed();
 
@@ -80,45 +43,24 @@ void StartBeautyShell() {
 			InputText.Text += (char)key;
 		}
 
-		auto currentTime = std::chrono::steady_clock::now();
-
-		if (IsKeyPressed(KEY_BACKSPACE) && !InputText.Text.empty()) {
-			InputText.Text.pop_back();
-		} else if (IsKeyDown(KEY_BACKSPACE) && !InputText.Text.empty()) {
-			if (!BackspaceActive) {
-				BackspaceActive = true;
-				StartBackspacePress = currentTime;
-			}
-			if (ConvertTimeDifToMs(currentTime - StartBackspacePress) >= EreaseStartDelay) {
-				if (!RepeatActive) {
-					RepeatActive = true;
-					StartRepeatRate = currentTime;
-				}
-				if (ConvertTimeDifToMs(currentTime - StartRepeatRate) >= EreaseRepeatRate) {
-					InputText.Text.pop_back();
-					StartRepeatRate = currentTime;
-				}
-			}
-		} else {
-			BackspaceActive = false;
-			RepeatActive = false;
-		}
+		KeyHandler::KeyEvents(key);
 
 		BeginDrawing();
 
 		ClearBackground(MainConsole.Background);
 
 		for (auto OutText : OutputText) {
-			DrawTextEx(CurrentFont.font, OutText.Text.c_str(), OutText.Position, 16, 0, OutText.color);
+			ConsoleDrawText(OutText);
 		}
 
-		DrawTextEx(CurrentFont.font, InputText.Text.c_str(), InputText.Position, 16, 0, InputText.color);
+		ConsoleDrawText(InputText);
+
+		ConsoleDrawCursor({InputText.Position.x, InputText.Position.y});
 
 		EndDrawing();
-
 	}
 
-	ConsoleUnloadFont(CurrentFont);
+	ConsoleUnloadFont(CnslFont::CurrentFont);
 	CloseWindow();
 
 }

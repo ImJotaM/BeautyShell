@@ -89,6 +89,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Globals.h" />
+    <ClCompile Include="KeyHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\fonts\CascadiaCode.ttf" />
