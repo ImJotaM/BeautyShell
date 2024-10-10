@@ -93,6 +93,9 @@
   <ItemGroup>
     <Font Include="assets\fonts\CascadiaCode.ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BeautyShell.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
