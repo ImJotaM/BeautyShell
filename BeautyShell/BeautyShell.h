@@ -17,13 +17,15 @@ void ConsoleDrawText(ConsoleText& text) {
 }
 
 void ConsoleDrawCursor(Vector2 Position) {
-	Vector2 NormalizedPosition = { Position.x * ScreenGridOffset.x , Position.y + ScreenGridOffset.y };
-	DrawRectangle(NormalizedPosition.x, NormalizedPosition.y, CnslCursor::ConsoleCursorSize.x, CnslCursor::ConsoleCursorSize.y, CnslCursor::color);
+	Vector2 NormalizedPosition = { Position.x * ScreenGridOffset.x , Position.y * ScreenGridOffset.y };
+	DrawRectangle(static_cast<int>(NormalizedPosition.x), static_cast<int>(NormalizedPosition.y),
+				  CnslCursor::ConsoleCursorSize.Width, CnslCursor::ConsoleCursorSize.Height, 
+				  CnslCursor::color);
 }
 
 void StartBeautyShell() {
 
-	InitWindow(MainConsole.Width, MainConsole.Height, MainConsole.Title.c_str());
+	InitWindow(MainConsole.Size.Width, MainConsole.Size.Width, MainConsole.Title.c_str());
 	SetTargetFPS(MainConsole.FPS);
 
 	ConsoleLoadFont(CnslFont::CurrentFont);
@@ -35,7 +37,7 @@ void StartBeautyShell() {
 
 	while (!WindowShouldClose()) {
 
-		currentTime = CnslTime::GetCurrentTime();
+		CnslTime::currentTime = CnslTime::GetCurrentTime();
 
 		int key = GetCharPressed();
 
@@ -54,8 +56,13 @@ void StartBeautyShell() {
 		}
 
 		ConsoleDrawText(InputText);
-
-		ConsoleDrawCursor({InputText.Position.x, InputText.Position.y});
+		
+		if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - CnslCursor::StartBlinkRate) >= CnslCursor::BlinkRate) {
+			ConsoleDrawCursor({ InputText.Position.x + InputText.Text.length(), InputText.Position.y });
+			if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - CnslCursor::StartBlinkRate) >= CnslCursor::BlinkRate * 2) {
+				CnslCursor::StartBlinkRate = CnslTime::currentTime;
+			}
+		}
 
 		EndDrawing();
 	}

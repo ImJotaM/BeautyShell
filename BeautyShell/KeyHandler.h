@@ -18,16 +18,16 @@ namespace KeyHandler {
 		else if (IsKeyDown(KEY_BACKSPACE) && !InputText.Text.empty()) {
 			if (!BackspaceActive) {
 				BackspaceActive = true;
-				StartBackspacePress = currentTime;
+				StartBackspacePress = CnslTime::currentTime;
 			}
-			if (CnslTime::ConvertTimeDifToMs(currentTime - StartBackspacePress) >= EreaseStartDelay) {
+			if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - StartBackspacePress) >= EreaseStartDelay) {
 				if (!RepeatActive) {
 					RepeatActive = true;
-					StartRepeatRate = currentTime;
+					StartRepeatRate = CnslTime::currentTime;
 				}
-				if (CnslTime::ConvertTimeDifToMs(currentTime - StartRepeatRate) >= EreaseRepeatRate) {
+				if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - StartRepeatRate) >= EreaseRepeatRate) {
 					InputText.Text.pop_back();
-					StartRepeatRate = currentTime;
+					StartRepeatRate = CnslTime::currentTime;
 				}
 			}
 		}

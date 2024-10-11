@@ -5,23 +5,24 @@
 #include <string>
 #include <chrono>
 
-struct FontData {
+struct Size {
+	int Width = 0;
+	int Height = 0;
+};
 
+struct FontData {
 	Font font = {};
 	std::string font_path = {};
 };
 
 struct ConsoleText {
-
 	std::string Text = "";
 	Vector2 Position = { 0, 0 };
 	Color color = WHITE;
 };
 
 struct ConsoleData {
-
-	int Width = 500;
-	int Height = 600;
+	Size Size = { 800, 600 };
 	std::string Title = "Beauty Shell";
 	int FPS = 60;
 	Color Background = WHITE;
@@ -33,7 +34,7 @@ inline FontData Arial = { {}, FONTS_PATH + "arial.ttf" };
 inline FontData CascadiaCode = { {}, FONTS_PATH + "CascadiaCode.ttf" };
 
 inline ConsoleData MainConsole = {
-	500, 600, "BeautyShell", 60, BLACK
+	{500, 600}, "BeautyShell", 60, BLACK
 };
 
 inline std::vector<ConsoleText> OutputText;
@@ -41,18 +42,16 @@ inline ConsoleText InputText;
 
 inline Vector2 ScreenGridOffset = { 8, 16 };
 
-inline std::chrono::steady_clock::time_point currentTime;
-
 namespace CnslFont {
-
 	inline FontData CurrentFont = CascadiaCode;
 	inline float FontSize = 16;
 	inline float Spacing = 0;
-
 }
 
 namespace CnslTime {
 	
+	inline std::chrono::steady_clock::time_point currentTime;
+
 	inline auto GetCurrentTime() {
 		return std::chrono::steady_clock::now();
 	}
@@ -65,7 +64,9 @@ namespace CnslTime {
 namespace CnslCursor {
 	
 	inline bool ConsoleShowCursor = true;
-	inline Vector2 ConsoleCursorSize = { 8, 16 };
+	inline Size ConsoleCursorSize = { 8, 16 };
 	inline Vector2 Position = {0, 0};
-	Color color = WHITE;
+	inline Color color = WHITE;
+	inline int BlinkRate = 500;
+	inline auto StartBlinkRate = CnslTime::GetCurrentTime();
 }
