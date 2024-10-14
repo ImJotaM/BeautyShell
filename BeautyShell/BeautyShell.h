@@ -13,11 +13,13 @@ void ConsoleDrawText(ConsoleText& text) {
 
 	Vector2 NormalizedPosition = { text.Position.x * ScreenGridOffset.x, text.Position.y * ScreenGridOffset.y };
 
-	DrawTextEx(CnslFont::CurrentFont.font, text.Text.c_str(), NormalizedPosition, CnslFont::FontSize, CnslFont::Spacing, text.color);
+	DrawTextEx(CnslFont::CurrentFont.font, text.Text.c_str(), 
+			   NormalizedPosition, 
+			   CnslFont::FontSize, CnslFont::Spacing, text.color);
 }
 
 void ConsoleDrawCursor(Vector2 Position) {
-	Vector2 NormalizedPosition = { Position.x * ScreenGridOffset.x , Position.y * ScreenGridOffset.y };
+	Vector2 NormalizedPosition = { Position.x * ScreenGridOffset.x , Position.y * ScreenGridOffset.y + 12};
 	DrawRectangle(static_cast<int>(NormalizedPosition.x), static_cast<int>(NormalizedPosition.y),
 				  CnslCursor::ConsoleCursorSize.Width, CnslCursor::ConsoleCursorSize.Height, 
 				  CnslCursor::color);
@@ -27,15 +29,14 @@ void StartBeautyShell() {
 
 	InitWindow(MainConsole.Size.Width, MainConsole.Size.Width, MainConsole.Title.c_str());
 	SetTargetFPS(MainConsole.FPS);
+	SetWindowState(FLAG_WINDOW_UNDECORATED);
 
+	CnslTitlebar::LoadTitlefont();
 	ConsoleLoadFont(CnslFont::CurrentFont);
 
-	OutputText.push_back({ "Bem-vindo ao BeautyShell!", {1, 1}, GREEN });
-	OutputText.push_back({ "Linha de comando: ", {1, 2}, WHITE });
-
-	InputText.Position = { (float)(OutputText.back().Text.size() + 1), 2 };
-
 	while (!WindowShouldClose()) {
+
+		CnslTitlebar::EventHandler();
 
 		CnslTime::currentTime = CnslTime::GetCurrentTime();
 
@@ -48,8 +49,10 @@ void StartBeautyShell() {
 		KeyHandler::KeyEvents(key);
 
 		BeginDrawing();
-
 		ClearBackground(MainConsole.Background);
+
+		CnslTitlebar::DrawTitleBar();
+
 
 		for (auto OutText : OutputText) {
 			ConsoleDrawText(OutText);
@@ -57,17 +60,18 @@ void StartBeautyShell() {
 
 		ConsoleDrawText(InputText);
 		
-		if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - CnslCursor::StartBlinkRate) >= CnslCursor::BlinkRate) {
+		/*if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - CnslCursor::StartBlinkRate) >= CnslCursor::BlinkRate) {
 			ConsoleDrawCursor({ InputText.Position.x + InputText.Text.length(), InputText.Position.y });
 			if (CnslTime::ConvertTimeDifToMs(CnslTime::currentTime - CnslCursor::StartBlinkRate) >= CnslCursor::BlinkRate * 2) {
 				CnslCursor::StartBlinkRate = CnslTime::currentTime;
 			}
-		}
+		}*/
 
 		EndDrawing();
 	}
 
 	ConsoleUnloadFont(CnslFont::CurrentFont);
+	ConsoleUnloadFont(CnslFont::SegoeUI);
 	CloseWindow();
 
 }

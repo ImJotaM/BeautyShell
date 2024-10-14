@@ -88,7 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Globals.h" />
     <ClCompile Include="KeyHandler.h" />
   </ItemGroup>
