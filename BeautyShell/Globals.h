@@ -228,20 +228,24 @@ namespace CnslTitlebar {
 	// Titlebar event handler
 	inline void EventHandler() {
 		if (CnslMouse::IsMouseOver(minimizebtnRect)) {
+			minimizebtnColor = { 130, 130, 130, 80 };
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				MinimizeWindow();
 			}
-		}
+		} else { minimizebtnColor = BLACK; }
 		if (CnslMouse::IsMouseOver(maximezebtnRect)) {
+			maximizebtnColor = { 130, 130, 130, 80 };
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				MaximizeWindow();
 			}
-		}
+		} else { maximizebtnColor = BLACK; }
 		if (CnslMouse::IsMouseOver(closebtnRect)) {
+			closebtnColor = RED;
 			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 				CloseWindow();
 			}
-		}
+		} else { closebtnColor = BLACK; }
+
 	}
 
 }
