@@ -3,8 +3,11 @@
 
 int main() {
 
+	Cnsl::InitilizeConsole();
 
 	StartBeautyShell();
+
+	Cnsl::TerminateConsole();
 
 	return 0;
 }

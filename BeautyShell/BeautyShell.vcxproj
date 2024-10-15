@@ -88,6 +88,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cnsl.cpp" />
+    <ClCompile Include="CnslTitlebar.cpp" />
+    <ClCompile Include="CnslTypes.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Globals.h" />
     <ClCompile Include="KeyHandler.h" />

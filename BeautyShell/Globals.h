@@ -1,52 +1,24 @@
 #pragma once
-#include <raylib.h>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <chrono>
+#include "CnslTypes.h"
 
-struct Size_f {
-	float Width = 0;
-	float Height = 0;
-};
+namespace Cnsl {
+	
+	// Console propeties
 
-struct Size {
-	int Width = 0;
-	int Height = 0;
-	Size_f ToSize_f() {
-		return { static_cast<float>(Width), static_cast<float>(Height) };
-	}
-};
+	extern int windowWidth; // Defines the width of the window
+	extern int windowHeight; // Defines the height of the window
+	extern std::string windowTitle; // Defines the title of the window
+	extern int windowFPS; // Defines the max FPS of the window
+	extern ConfigFlags windowFlags; // Defines flags of the window
+	extern Color windowColorBG; // Defines the background color of the window
 
-typedef Vector2 Position_f;
+	// Console functions
+	
+	extern void InitilizeConsole(); // Initializes the window
+	extern void TerminateConsole(); // Terminates the window
 
-struct Position {
-	int x = 0;
-	int y = 0;
-	Position_f ToVector2() {
-		return { static_cast<float>(x), static_cast<float>(y) };
-	}
-};
+}
 
-struct Line {
-	Position Start = { 0, 0 };
-	Position End = { 0 , 0 };
-};
-
-typedef Rectangle Rect_f;
-
-struct Rect {
-	int x = 0;
-	int y = 0;
-	int Width = 0;
-	int Height = 0;
-	Rect_f ToRect_f() {
-		return {
-			static_cast<float>(x), static_cast<float>(y),
-			static_cast<float>(Width), static_cast<float>(Height)
-		};
-	}
-};
 
 struct FontData {
 	Font font = {};
@@ -58,17 +30,6 @@ struct ConsoleText {
 	std::string Text = "";
 	Vector2 Position = { 0, 0 };
 	Color color = WHITE;
-};
-
-struct ConsoleData {
-	Size Size = { 800, 600 };
-	std::string Title = "Beauty Shell";
-	int FPS = 60;
-	Color Background = WHITE;
-};
-
-inline ConsoleData MainConsole = {
-	{500, 600}, "BeautyShell", 60, {12, 12, 12}
 };
 
 inline std::vector<ConsoleText> OutputText;
@@ -97,156 +58,97 @@ namespace CnslFont {
 	inline FontData CurrentFont = CascadiaCode;
 	inline float FontSize = 16;
 	inline float Spacing = 0;
+
+	inline void CnslLoadFont(FontData& font) {
+		font.font = LoadFontEx(font.font_path.c_str(), 32, nullptr, 250);
+	}
+
+	inline void CnslUnloadFont(FontData& font) {
+		UnloadFont(font.font);
+	}
+
 }
 
 namespace CnslTitlebar {
 
-	// Conteiner properties
-	inline Size conteinerSize = { MainConsole.Size.Width , 32 };
-	inline Color conteinerColor = BLACK;
+	/* Conteiner section */
+	//
+	extern Size conteinerSize; // Defines the size of the titlebar, based on the width of the window
+	extern Color conteinerColor; // Defines the color of the titlebar
+	
+	extern void DrawConteiner(); // Draws only the Titlebar conteiner
+	//
+	/* Conteiner section */
 
-	// Draw only the Titlebar conteiner
-	inline void DrawConteiner() {
-		DrawRectangle(0, 0, conteinerSize.Width, conteinerSize.Height, conteinerColor);
-	}
 
-	// Title properties
-	inline Font titleFont = {};
-	inline float titleSize = 16;
-	inline Position titlePosition = {0, conteinerSize.Height / 4 };
-	inline float titleSpacing = 1;
-	inline Color titleColor = WHITE;
+	/* Title section */
+	//
+	extern Font titleFont; // Defines the font of the title
+	extern float titleSize; // Defines the size of the title
+	extern Position titlePosition; // Defines the position of the title
+	extern float titleSpacing; // Defines the spacing of title
+	extern Color titleColor; // Defines the color of the title
 
-	// Load title font
-	inline void LoadTitlefont() {
-		titleFont = LoadFontEx("assets/fonts/SegoeUI.ttf", 16, nullptr, 250);
-	}
+	extern void LoadTitlefont(); // Loads title font
+	extern void DrawTitle(); // Draws only the titlebar title
+	//
+	/* Title section */
 
-	// Draw only the Titlebar title
-	inline void DrawTitle() {
-		DrawTextEx(titleFont, "BeautyShell", titlePosition.ToVector2(), titleSize, titleSpacing, titleColor);
-	}
 
-	// Close button properties
-	inline Size closebtnSize = { 45 , conteinerSize.Height };
-	inline Position closebtnPosition = {conteinerSize.Width - closebtnSize.Width, 0};
-	inline Rectangle closebtnRect = { 
-		closebtnPosition.ToVector2().x, closebtnPosition.ToVector2().y,
-		closebtnSize.ToSize_f().Width, closebtnSize.ToSize_f().Height
-	};
-	inline Color closebtnColor = BLACK;
+	/* Close button section */
+	//
+	extern Size closebtnSize;
+	extern Position closebtnPosition;
+	extern Rectangle closebtnRect;
+	extern Color closebtnColor;
+	//
+	extern int closeIconSize = 10;
+	extern Line closeIconComp_1;
+	extern Line closeIconComp_2;
+	extern Color closeIconColor;
+	//
+	extern void DrawClosebtn(); // Draws only the Titlebar close button
+	//
+	/* Close button section */
 
-	// Close button icon properties
-	inline int closeIconSize = 10;
-	inline Line closeIconComp_1 = {
-		closebtnPosition.x + 18,
-		closebtnPosition.y + 12,
-		closeIconComp_1.Start.x + closeIconSize,
-		closeIconComp_1.Start.y + closeIconSize
-	};
-	inline Line closeIconComp_2 = {
-		closeIconComp_1.End.x,
-		closeIconComp_1.Start.y,
-		closeIconComp_1.Start.x,
-		closeIconComp_1.End.y
-	};
-	inline Color closeIconColor = { 255, 255, 255, 215 };
 
-	// Draw only the Titlebar close button
-	inline void DrawClosebtn() {
-		DrawRectangleRec(closebtnRect, closebtnColor);
-		DrawLineEx(closeIconComp_1.Start.ToVector2(), closeIconComp_1.End.ToVector2(), 1, closeIconColor);
-		DrawLineEx(closeIconComp_2.Start.ToVector2(), closeIconComp_2.End.ToVector2(), 1, closeIconColor);
-	}
+	/* Maximize button section */
+	//
+	extern Size maximizebtnSize;
+	extern Position maximizebtnPosition;
+	extern Rectangle maximezebtnRect;
+	extern Color maximizebtnColor;
+	//
+	extern int maximizeIconSize;
+	extern Rect maximizeIconComp_1;
+	extern Color maximizeIconColor;
+	//
+	extern void DrawMaximizebtn(); // Draws only the TitleBar maximize button
+	//
+	/* Maximize button section */
 
-	// Maximize button properties
-	inline Size maximizebtnSize = { 45, conteinerSize.Height };
-	inline Position maximizebtnPosition = { closebtnPosition.x - maximizebtnSize.Width - 1, 0 };
-	inline Rectangle maximezebtnRect = {
-		maximizebtnPosition.ToVector2().x , maximizebtnPosition.ToVector2().y,
-		maximizebtnSize.ToSize_f().Width, maximizebtnSize.ToSize_f().Height
-	};
-	inline Color maximizebtnColor = BLACK;
 
-	// Maximize button icon properties
-	inline int maximizeIconSize = 10;
-	inline Rect maximizeIconComp_1 = {
-		maximizebtnPosition.x + 18,
-		maximizebtnPosition.y + 12,
-		maximizeIconSize,
-		maximizeIconSize
-	};
-	inline Color maximizeIconColor = WHITE;
+	/* Minimize button section */
+	//
+	extern Size minimizebtnSize;
+	extern Position minimizebtnPosition;
+	extern Rectangle minimizebtnRect;
+	extern Color minimizebtnColor;
+	//
+	extern int minimizeIconSize;
+	extern Line minimizeIconComp_1;
+	extern Color minimizeIconColor;
+	//
+	extern void DrawMinimizebtn(); // Draws only the TitleBar minimize button
+	//
+	/* Minimize button section */
 
-	// Draw only the TitleBar maximize button
-	inline void DrawMaximizebtn() {
-		DrawRectangleRec(maximezebtnRect, maximizebtnColor);
-		DrawRectangleLines(
-			maximizeIconComp_1.x, maximizeIconComp_1.y,
-			maximizeIconComp_1.Width, maximizeIconComp_1.Height,
-			maximizeIconColor
-		);
-	}
-
-	// Minimize button properties
-	inline Size minimizebtnSize = { 45, conteinerSize.Height };
-	inline Position minimizebtnPosition = { maximizebtnPosition.x - minimizebtnSize.Width - 1, 0 };
-	inline Rectangle minimizebtnRect = {
-		minimizebtnPosition.ToVector2().x , minimizebtnPosition.ToVector2().y,
-		minimizebtnSize.ToSize_f().Width, minimizebtnSize.ToSize_f().Height
-	};
-	inline Color minimizebtnColor = BLACK;
-
-	// Minimize button icon properties
-	inline int minimizeIconSize = 10;
-	inline Line minimizeIconComp_1 = {
-		minimizebtnPosition.x + 18, 
-		minimizebtnPosition.y + 18,
-		minimizeIconComp_1.Start.x + minimizeIconSize,
-		minimizeIconComp_1.Start.y
-	};
-	inline Color minimizeIconColor = WHITE;
-
-	// Draw only the TitleBar minimize button
-	inline void DrawMinimizebtn() {
-		DrawRectangleRec(minimizebtnRect, minimizebtnColor);
-		DrawLineEx(
-			minimizeIconComp_1.Start.ToVector2(), minimizeIconComp_1.End.ToVector2(),
-			1, minimizeIconColor
-		);
-	}
-
-	// Draw complete Titlebar
-	inline void DrawTitleBar() {
-		DrawConteiner();
-		DrawTitle();
-		DrawMinimizebtn();
-		DrawMaximizebtn();
-		DrawClosebtn();
-	}
-
-	// Titlebar event handler
-	inline void EventHandler() {
-		if (CnslMouse::IsMouseOver(minimizebtnRect)) {
-			minimizebtnColor = { 130, 130, 130, 80 };
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-				MinimizeWindow();
-			}
-		} else { minimizebtnColor = BLACK; }
-		if (CnslMouse::IsMouseOver(maximezebtnRect)) {
-			maximizebtnColor = { 130, 130, 130, 80 };
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-				MaximizeWindow();
-			}
-		} else { maximizebtnColor = BLACK; }
-		if (CnslMouse::IsMouseOver(closebtnRect)) {
-			closebtnColor = RED;
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-				CloseWindow();
-			}
-		} else { closebtnColor = BLACK; }
-
-	}
+	/* TO BE USED */
+	//
+	inline void DrawTitleBar(); // Draws complete Titlebar
+	inline void EventHandler(); // Titlebar event handler
+	//
+	/* TO BE USED */
 
 }
 
@@ -273,10 +175,3 @@ namespace CnslCursor {
 	inline auto StartBlinkRate = CnslTime::GetCurrentTime();
 }
 
-namespace Cnsl {
-
-	inline void Out(std::string text) {
-		OutputText.push_back({text});
-	}
-
-}

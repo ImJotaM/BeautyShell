@@ -1,14 +1,6 @@
 #pragma once
 #include "KeyHandler.h"
 
-void ConsoleLoadFont(FontData& font) {
-	font.font = LoadFontEx(font.font_path.c_str(), 32, nullptr, 250);
-}
-
-void ConsoleUnloadFont(FontData& font) {
-	UnloadFont(font.font);
-}
-
 void ConsoleDrawText(ConsoleText& text) {
 
 	Vector2 NormalizedPosition = { text.Position.x * ScreenGridOffset.x, text.Position.y * ScreenGridOffset.y };
@@ -27,13 +19,6 @@ void ConsoleDrawCursor(Vector2 Position) {
 
 void StartBeautyShell() {
 
-	InitWindow(MainConsole.Size.Width, MainConsole.Size.Width, MainConsole.Title.c_str());
-	SetTargetFPS(MainConsole.FPS);
-	SetWindowState(FLAG_WINDOW_UNDECORATED);
-
-	CnslTitlebar::LoadTitlefont();
-	ConsoleLoadFont(CnslFont::CurrentFont);
-
 	while (!WindowShouldClose()) {
 
 		CnslTitlebar::EventHandler();
@@ -49,7 +34,7 @@ void StartBeautyShell() {
 		KeyHandler::KeyEvents(key);
 
 		BeginDrawing();
-		ClearBackground(MainConsole.Background);
+		ClearBackground(Cnsl::windowColorBG);
 
 		CnslTitlebar::DrawTitleBar();
 
@@ -69,9 +54,5 @@ void StartBeautyShell() {
 
 		EndDrawing();
 	}
-
-	ConsoleUnloadFont(CnslFont::CurrentFont);
-	ConsoleUnloadFont(CnslFont::SegoeUI);
-	CloseWindow();
 
 }
