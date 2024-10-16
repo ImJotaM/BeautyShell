@@ -1,4 +1,4 @@
-#include "Globals.h"
+#include "BeautyShell.h"
 
 namespace Cnsl {
 
@@ -11,8 +11,11 @@ namespace Cnsl {
 	Color windowColorBG = { 12, 12, 12 };
 
 	// Initializes the console
+	void InitializeConsole() {
+		ConsoleThread = std::thread(Console);
+	}
 
-	void InitilizeConsole() {
+	void Console() {
 
 		InitWindow(windowWidth, windowHeight, windowTitle.c_str());
 		SetTargetFPS(windowFPS);
@@ -20,11 +23,22 @@ namespace Cnsl {
 
 		CnslTitlebar::LoadTitlefont();
 		CnslFont::CnslLoadFont(CnslFont::CurrentFont);
-	}
 
-	// Terminates the console
+		while (!shouldClose) {
 
-	void TerminateConsole() {
+			CnslTitlebar::EventHandler();
+
+			CnslTime::currentTime = CnslTime::GetCurrentTime();
+
+			BeginDrawing();
+
+			ClearBackground(Cnsl::windowColorBG);
+
+			CnslTitlebar::DrawTitleBar();
+
+			EndDrawing();
+
+		}
 
 		UnloadFont(CnslTitlebar::titleFont);
 
@@ -32,6 +46,12 @@ namespace Cnsl {
 		CnslFont::CnslUnloadFont(CnslFont::SegoeUI);
 
 		CloseWindow();
+
+	}
+
+	// Terminates the console
+	void TerminateConsole() {
+		ConsoleThread.join();
 	}
 
 }

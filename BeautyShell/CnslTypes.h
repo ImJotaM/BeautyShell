@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <thread>
+#include <atomic>
 
 struct Size_f {
 	float Width = 0;
@@ -46,4 +48,16 @@ struct Rect {
 			static_cast<float>(Width), static_cast<float>(Height)
 		};
 	}
+};
+
+struct FontData {
+	Font font = {};
+	std::string font_path = {};
+	float spacing = 0;
+};
+
+struct ConsoleText {
+	std::string Text = "";
+	Vector2 Position = { 0, 0 };
+	Color color = WHITE;
 };

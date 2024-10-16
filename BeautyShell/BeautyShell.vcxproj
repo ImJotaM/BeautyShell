@@ -89,11 +89,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cnsl.cpp" />
+    <ClCompile Include="CnslFont.cpp" />
     <ClCompile Include="CnslTitlebar.cpp" />
     <ClCompile Include="CnslTypes.h" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Globals.h" />
-    <ClCompile Include="KeyHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\fonts\CascadiaCode.ttf" />
