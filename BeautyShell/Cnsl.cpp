@@ -3,12 +3,20 @@
 namespace Cnsl {
 
 	// Console propeties
-	int windowWidth = 500;
-	int windowHeight = 600;
+	int windowWidth = 600;
+	int windowHeight = 400;
 	std::string windowTitle = "BeautyShell";
 	int windowFPS = 60;
 	ConfigFlags windowFlags = FLAG_WINDOW_UNDECORATED;
 	Color windowColorBG = { 12, 12, 12 };
+
+	void InitializeWindow() {
+
+		InitWindow(windowWidth, windowHeight, windowTitle.c_str());
+		SetTargetFPS(windowFPS);
+		SetWindowState(windowFlags);
+
+	}
 
 	// Initializes the console
 	void InitializeConsole() {
@@ -17,12 +25,14 @@ namespace Cnsl {
 
 	void Console() {
 
-		InitWindow(windowWidth, windowHeight, windowTitle.c_str());
-		SetTargetFPS(windowFPS);
-		SetWindowState(windowFlags);
+		InitializeWindow();
 
 		CnslTitlebar::LoadTitlefont();
 		CnslFont::CnslLoadFont(CnslFont::CurrentFont);
+
+		CnslTitlebar::iconImage = LoadImage("assets/icons/icon.png");
+		CnslTitlebar::iconTexture = LoadTextureFromImage(CnslTitlebar::iconImage);
+		UnloadImage(CnslTitlebar::iconImage);
 
 		while (!shouldClose) {
 
@@ -40,10 +50,13 @@ namespace Cnsl {
 
 		}
 
+
 		UnloadFont(CnslTitlebar::titleFont);
 
 		CnslFont::CnslUnloadFont(CnslFont::CurrentFont);
 		CnslFont::CnslUnloadFont(CnslFont::SegoeUI);
+
+		UnloadTexture(CnslTitlebar::iconTexture);
 
 		CloseWindow();
 

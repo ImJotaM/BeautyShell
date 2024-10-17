@@ -15,11 +15,17 @@ namespace Cnsl {
 	inline bool shouldClose = false;
 	inline std::thread ConsoleThread;
 	//
+	extern void InitializeWindow();
 	extern void InitializeConsole(); // Initializes the window
 	extern void Console();
 	extern void TerminateConsole(); // Terminates the window
 	//
 	/* Window section */
+
+	inline std::string OutputText = "";
+	inline void Out(std::string outputString) {
+		OutputText += outputString;
+	}
 
 }
 
@@ -62,6 +68,12 @@ namespace CnslTitlebar {
 	//
 	/* Conteiner section */
 
+	inline Image iconImage;
+	inline Texture2D iconTexture;
+	extern Size iconSize;
+	extern Position iconPosition;
+
+	extern void DrawIcon();
 
 	/* Title section */
 	//
@@ -136,13 +148,10 @@ namespace CnslTitlebar {
 
 namespace CnslTime {
 
-	inline std::chrono::steady_clock::time_point currentTime;
+	extern std::chrono::steady_clock::time_point currentTime;
 
-	inline auto GetCurrentTime() {
-		return std::chrono::steady_clock::now();
-	}
+	extern std::chrono::steady_clock::time_point GetCurrentTime();
 
-	inline int ConvertTimeDifToMs(std::chrono::steady_clock::duration duration) {
-		return static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
-	}
+	extern int ConvertTimeDifToMs(std::chrono::steady_clock::duration duration);
+
 }

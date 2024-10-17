@@ -11,10 +11,17 @@ namespace CnslTitlebar {
 		DrawRectangle(0, 0, conteinerSize.Width, conteinerSize.Height, conteinerColor);
 	}
 
+	Size iconSize = { 20, 16 };
+	Position iconPosition = { 8, 9 };
+
+	void DrawIcon() {
+		DrawTexture(iconTexture, iconPosition.x, iconPosition.y, WHITE);
+	}
+
 	// Title properties
 	Font titleFont = {};
 	float titleSize = 16;
-	Position titlePosition = { 0, conteinerSize.Height / 4 };
+	Position titlePosition = { iconPosition.x + iconSize.Width + 4, conteinerSize.Height / 4 };
 	float titleSpacing = 1;
 	Color titleColor = WHITE;
 
@@ -120,6 +127,7 @@ namespace CnslTitlebar {
 	// Draws complete Titlebar
 	void DrawTitleBar() {
 		DrawConteiner();
+		DrawIcon();
 		DrawTitle();
 		DrawMinimizebtn();
 		DrawMaximizebtn();
